@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>注册</title>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/layui/layui.js"></script>
+    <link href="/layui/css/layui.css" rel="stylesheet"/>
+    <style>
+        body {
+            background: url(/img/login.jpg) no-repeat center center;
+            margin-top: 580px;
+            -webkit-background-size: 1920px;
+            background-size: 1720px 1100px;
+        }
+
+        .box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            padding: 40px;
+            background: whitesmoke;
+            /* 阴影 */
+            box-shadow: 0 15px 25px #039679;
+            border-radius: 10px;
+        }
+
+        .box h2 {
+            margin: 0 0 30px;
+            padding: 0;
+            color: #009f95;
+            text-align: center;
+        }
+
+        .box .inputbox {
+            position: relative;
+
+        }
+
+        .box .inputbox input {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 16px;
+            color: black;
+            margin-bottom: 30px;
+            /* 背景设置透明 */
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid #009f95;
+        }
+
+        .box .inputbox label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 10px 0;
+            font-size: 16px;
+            color: #009f95;
+            pointer-events: none;
+            transition: .5s;
+        }
+
+        .box .inputbox label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #000;
+            font-size: 16px;
+            pointer-events: none;
+            transition: all 0.5s;
+        }
+
+        .box .inputbox input:focus + label,
+        .box .inputbox input:valid + label {
+            font-size: 13px;
+            top: -20px;
+            color: teal;
+        }
+
+        .box .layui-btn {
+            color: #fff;
+            /* 渐变背景色 */
+            background: linear-gradient(to left, #39e5da, #1faba2, #009f95);
+        }
+
+        .box .layui-btn:hover {
+            /* 鼠标经过按钮时放大 */
+            transform: scale(1.3);
+            /* 放大的速度设置 */
+            transition: 0.6s;
+
+        }
+    </style>
+</head>
+<body>
+<div class="box">
+<form class="layui-form">
+    <h2>注册</h2>
+    <div class="inputbox">
+        <input type="text" name="username" required="required">
+        <label>用户名</label>
+    </div>
+    <div class="inputbox">
+        <input type="password" name="password" required="required">
+        <label>密码</label>
+    </div>
+    <div class="inputbox">
+        <input type="password" name="confirmPassword" required="required">
+        <label>确认密码</label>
+    </div>
+    <div class="layui-input-block">
+        <button class="layui-btn" lay-submit lay-filter="save" style="width: 100px">提交</button>
+    </div>
+</form>
+</div>
+<script>
+    var form;
+    var $;
+    var layer;
+    layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        form.on("submit(save)", function (obj) {
+            console.log(obj);
+            console.log(typeof obj);
+            $.ajax(
+                {
+                    url: '/user/confirm',
+                    data: obj.field,//注册信息
+                    type: 'POST',//post传输
+                    success: function (ret) {
+                        if (ret.code === 0 ) {
+                            layer.msg("注册成功")
+                            window.location.href = "../../login.html";
+                        }else {
+                            layer.msg("密码不一致")
+                        }
+                    },
+                    error: function () {
+                        layer.msg("用户名已存在");
+                    }
+                }
+            )
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/medical_administrative_system?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf8&useSSL=false
+  mvc:
+    pathmatch:
+      # Springfox使用的路径匹配是基于AntPathMatcher的
+      # 所以需要配置此参数
+      matching-strategy: ant_path_matcher
+  redis:
+    host: 39.101.77.64
+    password: Qiang123
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.yxq.desmonddossofficeplatform.entity
+  configuration:
+    map-underscore-to-camel-case: true
+# 日志
+logging:
+  level:
+    com.yxq.desmonddossofficeplatform.dao: debug
+
+

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主页</title>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/layui/layui.js"></script>
+    <link href="/layui/css/layui.css" rel="stylesheet"/>
+    <style>
+        img{
+            width: 870px;
+            height: 280px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="layui-carousel layui-col-md-offset2 layui-col-md8 layui-col-md-offset2" id="test1">
+        <div carousel-item>
+            <div><img src="/img/u3.png"></div>
+            <div><img src="/img/t1.jpg"></div>
+            <div><img src="/img/t2.jpg"></div>
+            <div><img src="/img/u1.png"></div>
+            <div><img src="/img/u2.png"></div>
+        </div>
+    </div>
+</div>
+<!-- 条目中可以是任意内容，如：<img src=""> -->
+
+<script>
+    layui.use('carousel', function(){
+        var carousel = layui.carousel;
+        //建造实例
+        carousel.render({
+            elem: '#test1'
+            ,width: '70%' //设置容器宽度
+            ,arrow: 'always' //始终显示箭头
+            //,anim: 'updown' //切换动画方式
+        });
+    });
+</script>
+</body>
+</html>

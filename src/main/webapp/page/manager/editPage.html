@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑药品信息</title>
+    <script type="application/javascript" src="/js/jquery-2.1.0.min.js"></script>
+    <script type="application/javascript" src="/layui/layui.js"></script>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <form class="layui-form layui-form-pane">
+                <input type="hidden" name="id" required lay-verify="required" placeholder="请输入姓名"
+                       autocomplete="off" class="layui-input">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">药品名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="drugName" required lay-verify="required" placeholder="请输入姓名"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">产地</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="vender" required lay-verify="required" placeholder="请输入年龄"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">适用症状</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="symptom" required lay-verify="required" placeholder="请输入身份证号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">单价</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="drugPrice" required lay-verify="required" placeholder="请输入身份证号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">库存</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="drugCount" required lay-verify="required" placeholder="请输入手机号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">入库时间</label>
+                    <div class="layui-input-block">
+                        <input id="createTime" type="text" name="onTime" required lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button>
+                        <button class="layui-btn layui-btn-danger" type="reset">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let laydate = layui.laydate;
+        /*
+        因为 HTML date 日期格式是 2022/12/17 不符合 SQL 需求
+         laydate LayUI 的日期，选择渲染
+        */
+        laydate.render({
+            elem: '#createTime'
+        });
+        /**
+         * 保存
+         */
+        form.on("submit(save)", function (obj) {
+            $.ajax(
+                {
+                    url: '/admin/updateDrugInfo',
+                    data: obj.field, // 获取表单中的键值对数据，可以认为是 JSON 格式，发送给后端
+                    type: 'POST',
+                    success: function (ret) {
+                        // ret JSON {"code":0, "msg":"成功"}
+                        console.log(ret);
+                        console.log(typeof ret);
+                        if (ret.code === 0) {
+                            // 修改成功自动关闭当前页面
+                            // 上级页面弹框对象 获取当前 iframe 小页面对象，通过弹框的名字
+                            var index = parent.layer.getFrameIndex(window.name);
+                            // 上级页面的弹框对象关闭当前弹框
+                            parent.layer.close(index);
+                            layer.msg("修改成功");
+                        } else {
+                            layer.msg("修改失败");
+                        }
+                    },
+                    error: function () {
+                        layer.msg("服务器未响应");
+                    }
+                }
+            )
+
+            return false;
+        })
+    });
+</script>
+</body>
+</html>

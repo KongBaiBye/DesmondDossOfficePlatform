@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑医生信息</title>
+    <script type="application/javascript" src="/js/jquery-2.1.0.min.js"></script>
+    <script type="application/javascript" src="/layui/layui.js"></script>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <form class="layui-form layui-form-pane">
+                <!--  隐藏属性，用于修改信息-->
+                <input type="hidden" name="id" required lay-verify="required" placeholder="请输入工号"
+                       autocomplete="off" class="layui-input">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">工号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="empno" required lay-verify="required" placeholder="请输入工号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">科室</label>
+                    <div class="layui-input-block">
+                        <select name="department" lay-verify="required">
+                            <option value=""></option>
+                            <option value="1">中医科</option>
+                            <option value="2">康复科</option>
+                            <option value="3">内科</option>
+                            <option value="4">外科</option>
+                            <option value="5">儿科</option>
+                            <option value="6">老年科</option>
+                            <option value="7">全科医疗科</option>
+                            <option value="8">五官科</option>
+                            <option value="9">精神心理科</option>
+                            <option value="10">医学影像科</option>
+                            <option value="11">财务资产科</option>
+                            <option value="12">党建办公室</option>
+                            <option value="13">后勤管理科</option>
+                            <option value="14">护理科</option>
+                            <option value="15">信息管理科</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">职位</label>
+                    <div class="layui-input-block">
+                        <select name="positionId" lay-verify="required">
+                            <option value=""></option>
+                            <option value="1">院长</option>
+                            <option value="2">副院长</option>
+                            <option value="3">办公室主任</option>
+                            <option value="4">护士</option>
+                            <option value="5">住院医师</option>
+                            <option value="6">主治医师</option>
+                            <option value="7">副主任医师</option>
+                            <option value="8">主任医师</option>
+                            <option value="9">科室副主任</option>
+                            <option value="10">科室主任</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" required lay-verify="required" placeholder="请输入姓名"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">年龄</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="age" required lay-verify="required" placeholder="请输入年龄"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="gender" value="1" title="男">
+                        <input type="radio" name="gender" value="0" title="女">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idCard" required lay-verify="required" placeholder="请输入身份证号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="phone" required lay-verify="required" placeholder="请输入手机号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="address" required lay-verify="required" placeholder="请输入家庭地址"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button>
+                        <button class="layui-btn layui-btn-danger" type="reset">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let laydate = layui.laydate;
+        /**
+         * 保存
+         */
+        form.on("submit(save)", function (obj) {
+            $.ajax(
+                {
+                    url: '/admin/updateDoctor',
+                    data: obj.field, // 获取表单中的键值对数据，可以认为是 JSON 格式，发送给后端
+                    type: 'POST',
+                    success: function (ret) {
+                        // ret JSON {"code":0, "msg":"成功"}
+                        console.log(ret);
+                        console.log(typeof ret);
+                        if (ret.code === 0) {
+                            // 修改成功自动关闭当前页面
+                            // 上级页面弹框对象 获取当前 iframe 小页面对象，通过弹框的名字
+                            var index = parent.layer.getFrameIndex(window.name);
+                            // 上级页面的弹框对象关闭当前弹框
+                            parent.layer.close(index);
+                        } else {
+                            layer.msg("修改失败");
+                        }
+                    },
+                    error: function () {
+                        layer.msg("服务器未响应");
+                    }
+                }
+            )
+
+            return false;
+        })
+    });
+</script>
+</body>
+</html>

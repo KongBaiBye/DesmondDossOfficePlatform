@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加健康信息</title>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/layui/layui.js"></script>
+    <link href="/layui/css/layui.css" rel="stylesheet"/>
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <form class="layui-form layui-form-pane">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" required lay-verify="required" placeholder="请输入姓名"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idCard" required lay-verify="required" placeholder="请输入身份证号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">医保卡号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="medicareCard" required lay-verify="required" placeholder="请输入医保卡号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">身高</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="height" required lay-verify="required" placeholder="请输入身高"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">体重</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="weight" required lay-verify="required" placeholder="请输入体重"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">血压</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="bloodPressure" required lay-verify="required" placeholder="请输入血压"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">心跳</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="heartbeat" required lay-verify="required" placeholder="请输入心跳"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">脉搏</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="pulse" required lay-verify="required" placeholder="请输入脉搏"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">血糖</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="bloodGlucose" required lay-verify="required" placeholder="请输入血糖"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">血氧</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="bloodOxygen" required lay-verify="required" placeholder="请输入血氧"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">检查时间</label>
+                    <div class="layui-input-block">
+                        <input id="createTime" type="text" name="examineDate" required lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button>
+                        <button class="layui-btn layui-btn-danger" type="reset">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let laydate = layui.laydate;
+        /*
+     因为 HTML date 日期格式是 2022/12/17 不符合 SQL 需求
+     laydate LayUI 的日期，选择渲染
+      */
+        laydate.render({
+            elem: '#createTime'
+        });
+        /**
+         * 添加
+         */
+        form.on("submit(save)", function (obj) {
+            $.ajax(
+                {
+                    url: '/doctor/insertHealthInfo',
+                    data: obj.field, // 获取表单中的键值对数据，可以认为是 JSON 格式，发送给后端
+                    type: 'POST',
+                    success: function (ret) {
+                        // ret JSON {"code":0, "msg":"成功"}
+                        console.log(ret);
+                        console.log(typeof ret);
+                        if (ret.code === 0) {
+                            // 添加成功自动关闭当前页面
+                            // 上级页面弹框对象 获取当前 iframe 小页面对象，通过弹框的名字
+                            var index = parent.layer.getFrameIndex(window.name);
+                            // 上级页面的弹框对象关闭当前弹框
+                            parent.layer.close(index);
+                        } else {
+                            layer.msg("添加失败");
+                        }
+                    },
+                    error: function () {
+                        layer.msg("服务器未响应");
+                    }
+                }
+            )
+            return false;
+        })
+    });
+</script>
+</body>
+</html>

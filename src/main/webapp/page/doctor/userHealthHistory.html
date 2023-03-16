@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>居民就诊历史</title>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/layui/layui.js"></script>
+    <link href="/layui/css/layui.css" rel="stylesheet"/>
+    <script src="/js/common.js"></script>
+</head>
+<body>
+<div style="height: 50px"></div>
+<div class="layui-col-md-offset5 layui-col-md6">
+    <a style="font-size: 35px ;font-family: '宋体';color: black">居民就诊历史</a>
+</div>
+<div style="height: 50px"></div>
+<div class="layui-row">
+    <div class="layui-col-md12">
+        <!--lay-filter用来区分组件-->
+        <table id="infoTable" lay-filter="infoTableFilter"></table>
+    </div>
+</div>
+<script>
+    //layui.use加载模块，function加载模块的方法
+    var table;  // layui table 表格模块变量
+    var layer;  // layui layer 弹框提示模块变量
+    var form;  // layui form 表单模块变量
+    var $; // layui JQuery 模块变量
+    layui.use(['element', 'layer', 'util', 'table', 'form', 'laydate'], function () {
+        element = layui.element;
+        table = layui.table;
+        layer = layui.layer;
+        form = layui.form;
+        $ = layui.jquery;
+        let laydate = layui.laydate;
+        //渲染表格
+        renderTable();
+        //渲染时间
+        laydate.render({
+            elem: '#createTime1'
+        });
+        laydate.render({
+            elem: '#createTime2'
+        });
+        /**
+         * 搜索,表格的重载
+         */
+        search('search','/doctor/selectHistory')
+
+        /**
+         * 头部事件
+         */
+        util.event('lay-header-event', {
+            //左侧菜单事件
+            menuLeft: function (othis) {
+                layer.msg('展开左侧菜单的操作', {icon: 0});
+            }
+            , menuRight: function () {
+                layer.open({
+                    type: 1
+                    , content: '<div style="padding: 15px;">处理右侧面板的操作</div>'
+                    , area: ['260px', '100%']
+                    , offset: 'rt' //右上角
+                    , anim: 5
+                    , shadeClose: true
+                });
+            }
+        });
+
+    });
+
+    /**
+     * 渲染表格方法
+     */
+    function renderTable() {
+
+        // 确定表格渲染操作目标资源路径
+        let url = '/doctor/healthHistory';
+        // 确定 URL 之后渲染表格
+        //render渲染表格
+        table.render(
+            {
+                elem: "#infoTable",
+                url: url, // 渲染表格请求资源目标 url，ajax 请求数据资源的目标路径
+                page: true,  // 分页开启
+                limit: 10, // 默认分页数据量
+                limits: [10, 15], // 分页可选每一页数据内容
+                toolbar: '#toolbarDemo',
+                //设置表的大小
+                done :function (e){
+                    $('.layui-table').css("width","100%");
+                    $("th[data-field='delete']").css("border-right,'none");
+                },
+                //cols设置表头
+                cols: [[
+                    {field: 'name', title: '姓名',width: '7%',align:'center'},
+                    {field: 'idCard', title: '身份证号',sort : true, width: '18%',align:'center'},
+                    {field: 'symptom', title: '症状',width: '52%',align:'center'},
+                    {
+                        //templet自定义列模板
+                        field: 'creatTime', title: '就诊时间', sort: true,width :'23%',align:'center', templet: function (obj) {
+                            let date = new Date(obj.creatTime);
+                            let year = date.getFullYear();
+                            let month = date.getMonth() + 1; // 月份在代码中都是从 0 开始
+                            if (month < 10) {
+                                month = '0' + month;
+                            }
+                            let day = date.getDate(); // 当前日期是这一个月的第几天
+                            if (day < 10) {
+                                day = '0' + day;
+                            }
+                            return year + '-' + month + '-' + day;
+                        }
+                    },
+                ]]
+            }
+        )
+    }
+</script>
+<!--把搜索，添加，搜索全部，放到工具栏左侧-->
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-row">
+        <div>
+            <form class="layui-form layui-form-pane ">
+                <!-- 文本输入框 -->
+                <div class="layui-input-inline">
+                    <input  type="text" name="name" placeholder="请输入姓名" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                    <input  type="text" name="idCard" placeholder="请输入身份证号" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                    <input id="createTime1" type="text" name="onTime"
+                          class="layui-input" placeholder="请选择开始时间">
+                </div>
+                <div class="layui-input-inline">
+                    <input id="createTime2" type="text" name="outTime"
+                          class="layui-input" placeholder="请选择结束时间">
+                </div>
+                <!-- 搜索按钮和查询全部按钮 -->
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit lay-filter="search"><a class="layui-icon">&#xe615;</a></button>
+                    <button class="layui-btn" lay-submit lay-filter="findAll"><a class="layui-icon">&#xe60a;</a></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+</body>
+</html>

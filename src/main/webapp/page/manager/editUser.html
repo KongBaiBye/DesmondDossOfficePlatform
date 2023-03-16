@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑用户信息</title>
+    <script type="application/javascript" src="/js/jquery-2.1.0.min.js"></script>
+    <script type="application/javascript" src="/layui/layui.js"></script>
+    <link rel="stylesheet" href="/layui/css/layui.css">
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <form class="layui-form layui-form-pane">
+                <input type="hidden" name="id" required lay-verify="required" placeholder="请输入姓名"
+                       autocomplete="off" class="layui-input">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" required lay-verify="required" placeholder="请输入姓名"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">年龄</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="age" required lay-verify="required" placeholder="请输入年龄"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">性别</label>
+                    <div class="layui-input-block">
+                        <input type="radio" name="gender" value="1" title="男">
+                        <input type="radio" name="gender" value="0" title="女">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idCard" required lay-verify="required" placeholder="请输入身份证号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">医保卡号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="medicareCard" required lay-verify="required" placeholder="请输入身份证号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="phone" required lay-verify="required" placeholder="请输入手机号"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="address" required lay-verify="required" placeholder="请输入家庭地址"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">保存</button>
+                        <button class="layui-btn layui-btn-danger" type="reset">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let laydate = layui.laydate;
+        /**
+         * 保存
+         */
+        form.on("submit(save)", function (obj) {
+            $.ajax(
+                {
+                    url: '/admin/updateUserInfo',
+                    data: obj.field, // 获取表单中的键值对数据，可以认为是 JSON 格式，发送给后端
+                    type: 'POST',
+                    success: function (ret) {
+                        // ret JSON {"code":0, "msg":"成功"}
+                        console.log(ret);
+                        console.log(typeof ret);
+                        if (ret.code === 0) {
+                            // 修改成功自动关闭当前页面
+                            // 上级页面弹框对象 获取当前 iframe 小页面对象，通过弹框的名字
+                            var index = parent.layer.getFrameIndex(window.name);
+                            // 上级页面的弹框对象关闭当前弹框
+                            parent.layer.close(index);
+                            layer.msg("修改成功");
+                        } else {
+                            layer.msg("修改失败");
+                        }
+                    },
+                    error: function () {
+                        layer.msg("服务器未响应");
+                    }
+                }
+            )
+
+            return false;
+        })
+    });
+</script>
+</body>
+</html>

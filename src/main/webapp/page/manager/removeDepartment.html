@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>移入到别的科室</title>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/layui/layui.js"></script>
+    <link href="/layui/css/layui.css" rel="stylesheet"/>
+</head>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <form class="layui-form layui-form-pane">
+                <input type="hidden" name="empno" required lay-verify="required" placeholder="请输入工号"
+                       autocomplete="off" class="layui-input">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">科室</label>
+                    <div class="layui-input-block">
+                        <select name="department" lay-verify="required">
+                            <option value=""></option>
+                            <option value="1">中医科</option>
+                            <option value="2">康复科</option>
+                            <option value="3">内科</option>
+                            <option value="4">外科</option>
+                            <option value="5">儿科</option>
+                            <option value="6">老年科</option>
+                            <option value="7">全科医疗科</option>
+                            <option value="8">五官科</option>
+                            <option value="9">精神心理科</option>
+                            <option value="10">医学影像科</option>
+                            <option value="11">财务资产科</option>
+                            <option value="12">党建办公室</option>
+                            <option value="13">后勤管理科</option>
+                            <option value="14">护理科</option>
+                            <option value="15">信息管理科</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确定</button>
+                        <button class="layui-btn layui-btn-danger" type="reset">取消</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+        let laydate = layui.laydate;
+        /**
+         * 保存
+         */
+        form.on("submit(save)", function (obj) {
+            $.ajax(
+                {
+                    url: '/admin/updateDoctorDepartmentOn',
+                    data: obj.field, // 获取表单中的键值对数据，可以认为是 JSON 格式，发送给后端
+                    type: 'POST',
+                    success: function (ret) {
+                        console.log(ret);
+                        console.log(typeof ret);
+                        if (ret.code === 0) {
+                            // 修改成功自动关闭当前页面
+                            // 上级页面弹框对象 获取当前 iframe 小页面对象，通过弹框的名字
+                            var index = parent.layer.getFrameIndex(window.name);
+                            // 上级页面的弹框对象关闭当前弹框
+                            parent.layer.close(index);
+                            layer.msg("移入成功");
+                        } else {
+                            layer.msg("移入失败");
+                        }
+                    },
+                    error: function () {
+                        layer.msg("服务器未响应");
+                    }
+                }
+            )
+
+            return false;
+        })
+    });
+</script>
+</body>
+</html>

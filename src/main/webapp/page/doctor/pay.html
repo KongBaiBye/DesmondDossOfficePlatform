@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>缴费页面</title>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/layui/layui.js"></script>
+    <link href="/layui/css/layui.css" rel="stylesheet"/>
+</head>
+<body>
+<div class="layui-container">
+    <div class="layui-row">
+        <div class="layui-col-md4">
+            <form class="layui-form layui-form-pane"  lay-filter="managerInfo">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="patientName" required lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">身份证号</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="idCard" required lay-verify="required"
+                               autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">应缴费用</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="cost" required lay-verify="required"
+                               autocomplete="off" class="layui-input" id="cost">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">已经收金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="onPay" required lay-verify="required"
+                               autocomplete="off" class="layui-input" id="onPay">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button class="layui-btn layui-btn-normal" lay-submit lay-filter="save">确定</button>
+                        <button class="layui-btn layui-btn-danger" type="reset">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    layui.use(['form', 'jquery', 'layer', 'laydate'], function () {
+        let form = layui.form;
+        let $ = layui.jquery;
+        let layer = layui.layer;
+
+        /**
+         * 添加
+         */
+        form.on("submit(save)", function (obj) {
+            $.ajax(
+                {
+                    url: '/doctor/outPay',
+                    data: obj.field, // 获取表单中的键值对数据，可以认为是 JSON 格式，发送给后端
+                    type: 'POST',
+                    success: function (ret) {
+                        // ret JSON {"code":0, "msg":"成功"}
+                        console.log(ret);
+                        console.log(typeof ret);
+                        if (ret.code === 0) {
+                            var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);
+                        } else {
+                            layer.msg("ok");
+                        }
+                    },
+                    error: function () {
+                        layer.msg("服务器未响应");
+                    }
+                }
+            )
+            return false;
+        })
+
+
+    });
+</script>
+</body>
+</html>

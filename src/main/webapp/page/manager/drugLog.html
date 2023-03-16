@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>药品日志</title>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+    <script src="/layui/layui.js"></script>
+    <link href="/layui/css/layui.css" rel="stylesheet"/>
+</head>
+<body>
+<div style="height: 50px"></div>
+<div class="layui-col-md-offset5 layui-col-md6">
+    <a style="font-size: 35px ;font-family: '宋体';color: black">药品日志</a>
+</div>
+<div style="height: 50px"></div>
+<!-- 展示数据的表格，需要 LayUI 渲染 -->
+<div class="layui-row">
+    <div class="layui-col-md-offset1 layui-col-md10">
+        <!--lay-filter用来区分组件-->
+        <table id="infoTable" lay-filter="infoTableFilter"></table>
+    </div>
+</div>
+<script>
+    //layui.use加载模块，function加载模块的方法
+    var table;  // layui table 表格模块变量
+    var layer;  // layui layer 弹框提示模块变量
+    var form;  // layui form 表单模块变量
+    var $; // layui JQuery 模块变量
+    layui.use(['element', 'layer', 'util', 'table', 'form'], function () {
+        element = layui.element;
+        table = layui.table;
+        layer = layui.layer;
+        form = layui.form;
+        $ = layui.jquery;
+        renderTable();
+        /**
+         * 搜索
+         */
+        form.on('submit(search)', function (data) {
+            table.reload('infoTable',
+                {
+                    url: 'user/selectUserList',
+                    method: 'post',
+                    page: {
+                        curr: 1
+                    },
+                    where: data.field
+                },
+                'data'
+            );
+            return false;
+        });
+
+        /**
+         * 表格事件绑定，找到当前数据渲染的表达对象，obj 是当前点击事件对应的表格数据行对象
+         */
+        table.on('tool(infoTableFilter)',
+            //obj是userTableFilter组件里面的delete和edit事件的集合
+            function (obj) {
+                if (obj.event === 'delete') {
+                    // 表格触发的事件为 delete 执行删除数据操作
+                    // 弹框提示，确实 Confirm
+                    layer.confirm(
+                        "确定删除吗?",
+                        {
+                            icon: 3,//图标
+                            title: "提示"
+                        },
+                        // 用户点击确定删除
+                        function (index) {
+                            $.post(
+                                "user/deleteStudentInfo",
+                                {id: obj.data.id},//传入后台的内容obj.data从jQuery中取值，取id
+                                //后台传到前端的值
+                                function (ret) {
+                                    if (ret.code === 0) {
+
+                                        layer.msg("删除成功!");
+                                    } else {
+                                        layer.msg("删除失败!");
+                                    }
+                                }
+                            );
+                            // 关闭当前弹框
+                            layer.close(index);
+                            // 表格数据刷新
+                            table.reload("infoTable");
+                        },
+
+                        // 用户点击取消
+                        function (index) {
+                            layer.msg("删除取消!");
+                            layer.close(index);
+                        }
+                    );
+
+                } else if (obj.event === 'edit') {
+                    // 表格触发的事件为 edit 执行更新数据操作
+                    layer.open({
+                        type: 2, // 单独的 iframe 页面
+                        content: 'alterStudentPage.html',//连接
+                        area: ['600px', '500px'],//大小
+                        title: '更新用户信息',//弹窗名字
+                        success: function (layerObj, index) {
+                            let body = layer.getChildFrame("body", index);
+                            // 获取数据行数据，userData
+                            let userData = obj.data;
+                            /*
+                           JQuery 方法 attr()
+                           设置 HTML 标签属性，默认选择 check
+                            */
+                            body.find("input[name=gender][value=0]").attr('checked', userData.gender === true);
+                            body.find("input[name=gender][value=1]").attr('checked', userData.gender);
+                            // input[name=id] 标签名 + 属性选择器，并且要求属性值
+                            body.find("input[name=id]").val(userData.id);
+                            body.find("input[name=username]").val(userData.username);
+                            body.find("input[name=age]").val(userData.age);
+                            body.find("input[name=phone]").val(userData.phone);
+                            body.find("input[name=address]").val(userData.address);
+
+                        },
+                        end: function () {
+                            table.reload("infoTable");
+                        }
+                    });
+                } else if (obj.event === 'reset') {
+                    layer.confirm(
+                        "确定重置吗?",
+                        {
+                            icon: 3,//图标
+                            title: "提示"
+                        },
+                        // 用户点击确定
+                        function (index) {
+                            $.post(
+                                "user/resetPassword",
+                                {id: obj.data.id},//传入后台的内容obj.data从jQuery中取值，取id
+                                //后台传到前端的值
+                                function (ret) {
+                                    if (ret.code === 0) {
+
+                                        layer.msg("重置成功!");
+                                    } else {
+                                        layer.msg("重置失败!");
+                                    }
+                                }
+                            );
+                            // 关闭当前弹框
+                            layer.close(index);
+                            // 表格数据刷新
+                            table.reload("infoTable");
+                        },
+
+                        // 用户点击取消
+                        function (index) {
+                            layer.msg("重置取消!");
+                            layer.close(index);
+                        }
+                    )
+                }
+            })
+        /**
+         * 头部事件
+         */
+        util.event('lay-header-event', {
+            //左侧菜单事件
+            menuLeft: function (othis) {
+                layer.msg('展开左侧菜单的操作', {icon: 0});
+            }
+            , menuRight: function () {
+                layer.open({
+                    type: 1
+                    , content: '<div style="padding: 15px;">处理右侧面板的操作</div>'
+                    , area: ['260px', '100%']
+                    , offset: 'rt' //右上角
+                    , anim: 5
+                    , shadeClose: true
+                });
+            }
+        });
+
+    });
+
+    /**
+     * 渲染表格方法
+     * @param field   搜索操作字段名称参数，可有可无
+     * @param keyword 搜索操作关键字数据参数，可有可无
+     */
+    function renderTable() {
+
+        // 确定表格渲染操作目标资源路径
+        let url = '/admin/drugLog';
+        //render渲染表格
+        table.render(
+            {
+                elem: "#infoTable",
+                url: url, // 渲染表格请求资源目标 url，ajax 请求数据资源的目标路径
+                page: true,  // 分页开启
+                limit: 10, // 默认分页数据量
+                limits: [10, 15], // 分页可选每一页数据内容
+                //cols设置表头
+                cols: [[
+                    {field: 'id', title: 'ID', sort: true, width: 30},
+                    {field: 'operationCrew', title: '姓名'},
+                    {field: 'logName', title: '状态'},
+                    {
+                        field: 'success', title: '成功', templet: function (obj) {
+                            return obj.success ? '是' : '否';
+                        }
+                    },
+                    {
+                        //templet自定义列模板
+                        field: 'createTime', title: '时间', sort: true, width: 240, templet: function (obj) {
+                            let date = new Date(obj.createTime);
+                            let year = date.getFullYear();
+                            let month = date.getMonth() + 1; // 月份在代码中都是从 0 开始
+                            var hours = date.getHours();//时
+                            var minutes = date.getMinutes();//分
+                            var seconds = date.getSeconds();//秒
+                            if (month < 10) {
+                                // 1 ~ 9 月补齐一个 0 展示形式为 '01' '09'
+                                month = '0' + month;
+                            }
+                            let day = date.getDate(); // 当前日期是这一个月的第几天
+                            if (day < 10) {
+                                // 1 ~ 9 日补齐一个 0 展示形式为 '01' '09'
+                                day = '0' + day;
+                            }
+                            return year + '年' + month + '月' + day + "日" + hours + "时" + minutes + "分" + seconds + "秒";
+                        }
+                    },
+
+                ]]
+            }
+        )
+    }
+</script>
+</body>
+</html>

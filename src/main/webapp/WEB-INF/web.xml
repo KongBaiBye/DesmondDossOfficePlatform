@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+         version="4.0">
+    <servlet>
+        <servlet-name>DruidStatViewServlet</servlet-name>
+        <servlet-class>com.alibaba.druid.support.http.StatViewServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>DruidStatViewServlet</servlet-name>
+        <url-pattern>/druid/*</url-pattern>
+    </servlet-mapping>
+    <!-- Spring MVC 在 web.xml 文件中注册前端控制器对应的 Servlet -->
+    <servlet>
+        <!-- 注册当前前端控制器名称 mvc or dispatcherServlet -->
+        <servlet-name>mvc</servlet-name>
+        <!--  Spring MVC 中设置的 前端控制器对应的 Servlet -->
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <!-- 设置 Spring MVC 前端控制器初始化参数 -->
+        <init-param>
+            <!-- 配置 Spring MVC 配置文件路径 -->
+            <param-name>contextConfigLocation</param-name>
+            <!-- 在项目的根目录搜索对应的目标 spring-mvc.xml 文件 -->
+            <param-value>classpath:springMVC.xml</param-value>
+        </init-param>
+
+        <!-- Tomcat 启动项目，当前 Servlet 程序自动加载准备就绪 -->
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <!-- 对应的 Servlet 标签中的 servlet-name -->
+        <servlet-name>mvc</servlet-name>
+        <!-- 访问当前项目中的所有资源，都需要通过前端控制器来进行控制处理 -->
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <!--设置一个编码集过滤器 使用的是 Spring MVC 中的  CharacterEncodingFilter-->
+    <filter>
+        <filter-name>encoding</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>utf-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encoding</filter-name>
+        <!-- 整个 Web Application 中所有的资源都要进行编码集过滤操作 -->
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--登录过滤器-->
+    <filter>
+        <filter-name>LoginFilter</filter-name>
+        <filter-class>com.yxq.filter.LoginFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>LoginFilter</filter-name>
+        <url-pattern>*.html</url-pattern>
+    </filter-mapping>
+    <!-- 配置 验证码生成 Servlet 程序 -->
+    <servlet>
+        <servlet-name>cap</servlet-name>
+        <servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
+        <!--
+        关注验证码的核心参数
+        1. 验证码字符个数
+        2. 验证码可以使用字符范围
+        3. 验证码 Session 存储
+        -->
+        <!-- 验证码字符个数 -->
+        <init-param>
+            <param-name>kaptcha.textproducer.char.length</param-name>
+            <param-value>4</param-value>
+        </init-param>
+        <!-- 验证码可以使用字符范围 -->
+        <init-param>
+            <param-name>kaptcha.textproducer.char.string</param-name>
+            <param-value>0123456789</param-value>
+        </init-param>
+        <!-- 验证码 Session 存储 -->
+        <init-param>
+            <!--
+            KaptchaServlet 执行
+            session.setAttribute("captcha", "验证码");
+             -->
+            <param-name>kaptcha.session.key</param-name>
+            <param-value>captcha</param-value>
+        </init-param>
+
+        <!-- 验证码边框取消 -->
+        <init-param>
+            <param-name>kaptcha.border</param-name>
+            <param-value>no</param-value>
+        </init-param>
+        <!-- 验证码背景颜色渐变 -->
+        <init-param>
+            <param-name>kaptcha.background.clear.to</param-name>
+            <param-value>211,229,237</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>cap</servlet-name>
+        <!-- 当前使用 Google 验证码生成 Servlet 资源名称，和验证码工具类一致 -->
+        <url-pattern>/captcha</url-pattern>
+    </servlet-mapping>
+
+    <!--
+     listener 监听器
+     Tomcat 服务器启动，自动启动
+        ContextLoaderListener Context ==> 当前 WEB Application 启动加载监听器
+
+     【利用】
+        ContextLoaderListener 监听器 加载启动 Spring 配置 ==> Spring 工厂
+     -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <context-param>
+        <!--
+         contextConfigLocation WEB Application 配置文件设置
+         -->
+        <param-name>contextConfigLocation</param-name>
+        <!-- 加载对应的 Spring 配置文件 -->
+        <param-value>classpath:applicationContext.xml</param-value>
+    </context-param>
+    <welcome-file-list>
+        <welcome-file>/login.html</welcome-file>
+    </welcome-file-list>
+</web-app>
