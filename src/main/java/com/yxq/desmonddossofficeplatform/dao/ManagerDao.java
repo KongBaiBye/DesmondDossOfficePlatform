@@ -275,8 +275,41 @@ public interface ManagerDao {
      * 查询全部的操作日志
      * @return
      */
-    @Select("select *from operation_log")
-    List<Map<String,Object>> selectAllOperationLog();
+    @Select("select *from operation_log limit #{limit},#{size}")
+    List<Map<String,Object>> selectAllOperationLog(Integer limit,Integer size);
 
+    /**
+     * 根据id查询药品名
+     *
+     * @param id id
+     * @return {@link Map}<{@link String},{@link Object}>
+     */
+    @Select("select drugName from drug_info where id = #{id}")
+    Map<String,Object> selectDrugById(Integer id);
 
+    /**
+     * 根据id查询用户名
+     *
+     * @param id id
+     * @return {@link Map}<{@link String},{@link Object}>
+     */
+    @Select("select name from user_info where id = #{id}")
+    Map<String,Object> selectUserName(Integer id);
+
+    /**
+     * 根据医生id用户名
+     *
+     * @param id id
+     * @return {@link Map}<{@link String},{@link Object}>
+     */
+    @Select("select name from doctor_info where id = #{id}")
+    Map<String,Object> selectDoctor(Integer id);
+
+    /**
+     * 查询操作日志的数量
+     *
+     * @return int
+     */
+    @Select("select count(*) from operation_log")
+    int selectOperLogCount();
 }

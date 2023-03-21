@@ -182,5 +182,5 @@ public interface ManagerService {
      * 查询操作日志
      * @return
      */
-    ResultData selectAllOperationLog();
+    ResultData selectAllOperationLog(String page,String limit);
 }

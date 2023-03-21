@@ -144,6 +144,7 @@
                     data: obj.field,//手机号和密码传到后端
                     type: 'POST',//post传输
                     success: function (ret) {
+                        console.log(ret)
                         if (ret.code === 0 && ret.data === '管理员') {
                             window.location.href = "page/manager/managerPage.html";
                         } else if (ret.code === 0 && ret.data === '医生') {

@@ -1,9 +1,9 @@
 package com.yxq.desmonddossofficeplatform.controller;
 
+import com.yxq.desmonddossofficeplatform.annotation.LogRecord;
 import com.yxq.desmonddossofficeplatform.service.DoctorService;
 import com.yxq.desmonddossofficeplatform.utils.ResultData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +18,7 @@ import java.util.Map;
  * @Author: yxq
  * @Date: 2023/01/17 10:41
  */
+@Api(tags = "医生管理")
 @RestController
 @RequestMapping("/doctor")
 public class DoctorController {
@@ -66,6 +67,7 @@ public class DoctorController {
      * @param req
      * @return
      */
+    @LogRecord
     @RequestMapping("/insertHealthInfo")
     public ResultData insertUserHealthInfo(HttpServletRequest req, HttpSession session) {
         return doctorService.insertUserHealthInfo(req.getParameterMap());
@@ -77,8 +79,9 @@ public class DoctorController {
      * @param id
      * @return
      */
+    @LogRecord
     @RequestMapping("/removeUserHealthInfo")
-    public ResultData removeUserHealthInfo(String id) {
+    public ResultData deleteUserHealthInfo(String id) {
         return doctorService.removeUserHealthInfo(id);
     }
 
@@ -88,6 +91,7 @@ public class DoctorController {
      * @param req
      * @return
      */
+    @LogRecord
     @RequestMapping("/updateUserHealthInfo")
     public ResultData updateUserHealthInfo(HttpServletRequest req, HttpSession session) {
         return doctorService.updateUserHealthInfo(req.getParameterMap());
@@ -143,8 +147,9 @@ public class DoctorController {
      * @param id
      * @return
      */
+    @LogRecord
     @RequestMapping("/removeDrug")
-    public ResultData removeDrug(String id) {
+    public ResultData deleteDrug(String id) {
         return doctorService.removeDrug(id);
     }
 

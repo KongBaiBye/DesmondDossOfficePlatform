@@ -5,6 +5,7 @@ import cn.hutool.extra.servlet.ServletUtil;
 import com.yxq.desmonddossofficeplatform.service.LoginService;
 import com.yxq.desmonddossofficeplatform.utils.RedisUtils;
 import com.yxq.desmonddossofficeplatform.utils.ResultData;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpSession;
  * @Author: yxq
  * @Date: 2023/01/14 20:27
  */
+@Api(tags = "登录")
 @RestController
 @RequestMapping("/login")
 @SessionAttributes("username")

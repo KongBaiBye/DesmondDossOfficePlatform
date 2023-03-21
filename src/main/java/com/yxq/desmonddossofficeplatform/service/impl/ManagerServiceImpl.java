@@ -62,11 +62,6 @@ public class ManagerServiceImpl implements ManagerService {
                 managerDao.selectLoginLog((Integer.parseInt(page) - 1) * 10, Integer.parseInt(limit)));
     }
 
-    @Override
-    public ResultData selectDrugLog(String page, String limit) {
-        return ResultData.success(managerDao.selectDrugLogCount(),
-                managerDao.selectDrugLog((Integer.parseInt(page) - 1) * 10, Integer.parseInt(limit)));
-    }
 
     @Override
     public ResultData selectDoctorPersonInfo(String name) {
@@ -153,7 +148,13 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public ResultData selectAllOperationLog() {
-        return ResultData.success(managerDao.selectAllOperationLog());
+    public ResultData selectAllOperationLog(String page,String limit) {
+        return ResultData.success(managerDao.selectOperLogCount(),managerDao.selectAllOperationLog((Integer.parseInt(page) - 1) * 10, Integer.parseInt(limit)));
     }
+    @Override
+    public ResultData selectDrugLog(String page, String limit) {
+        return ResultData.success(managerDao.selectDrugLogCount(),
+                managerDao.selectDrugLog((Integer.parseInt(page) - 1) * 10, Integer.parseInt(limit)));
+    }
+
 }

@@ -34,6 +34,6 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public ResultData loginOut(String username) {
-       return ResultData.success();
+       return ResultData.success("退出成功");
     }
 }
