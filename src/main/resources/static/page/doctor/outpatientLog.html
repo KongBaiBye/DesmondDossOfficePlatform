@@ -37,9 +37,46 @@
         form = layui.form;
         $ = layui.jquery;
         renderTable();
+
         table.on('tool(infoTableFilter)',
             function (obj) {
                  if (obj.event === 'pay') {
+
+                     function pay(){
+                         var payUrl = null;
+                         $.ajaxSettings.async = false;
+                         $.post(
+                             "/pay/aliPay",
+                             {id: obj.data.id},//传入后台的内容obj.data从jQuery中取值，取id
+                             //后台传到前端的值
+                             function (ret) {
+                                 console.log(ret)
+                                 console.log(ret.data)
+                                 console.log(ret.data.code)
+                                 if (ret.data.code == 10000) {
+                                     payUrl =  ret.data.qr_code;
+                                 } else {
+                                     layer.msg("获取订单信息失败！");
+                                 }
+                             }
+                         );
+                         console.log("----------------")
+                         console.log(payUrl)
+                         return payUrl;
+                     }
+                     var purl = pay();
+                     console.log(purl)
+                     var retPay = null;
+                     $.ajaxSettings.async = false;
+                     $.get(
+                         "/qrcode",
+                         {content: purl},//传入后台的内容obj.data从jQuery中取值，取id
+                         //后台传到前端的值
+                         function (ret) {
+                             retPay=ret;
+                         }
+                     );
+                     console.log("ret----------"+retPay)
                     layer.open({
                         type: 2, // 单独的 iframe 页面
                         content: 'pay.html',//连接
@@ -54,6 +91,7 @@
                             body.find("input[name=patientName]").val(userData.patientName);
                             body.find("input[name=idCard]").val(userData.idCard);
                             body.find("input[name=cost]").val(userData.cost);
+                            body.find("img[id=cost]").src=purl;
                         },
                         end: function () {
                             table.reload("infoTable");

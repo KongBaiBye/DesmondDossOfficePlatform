@@ -21,5 +21,24 @@ mybatis:
 logging:
   level:
     com.yxq.desmonddossofficeplatform.dao: debug
+alipay:
+  # 支付宝沙箱环境或正式环境
+  easy:
+    # 通讯协议 可以是http 也可以是https[需要服务器配置SSL证书的]
+    protocol: http
+    ## 网关地址 沙箱环境是alipaydev 正式环境是alipay
+    gatewayHost: openapi.alipaydev.com
+    # 签名方式
+    signType: RSA2
+    # 应用ID
+    appId: 2021000121676481
+    # 应用私钥
+    merchantPrivateKey: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDYkKGfkKQ2yFvSL7YbIWvJwUbPE7oQ3xv1t92ilapAK81feYZD978e+EJ/sFAnHhBPA53KzRvD0Wl7Cc42cS8UFcm/uSkfg2GqYabEZgr1Lgc2CvYuoBPCM6QWPSeVmDBb6FFQ+9364pX9NJaE444bySNppq+uU1nktyHDiGO1KLB+u2idWDQpnLZIjIcc+935owfdbDpjuF8lDtC726ALpUZxK8SI6NCeDwwEHYmNDZucq6cShoq7G630uAt9NlRviMbrtbQGR7RDTe7i1Tg4FD6Caqp0cWdI+0W2QJPkraMWFanFxI4Xu+s0DOAIzQ7ntMVDgCepYJreI86UGqOrAgMBAAECggEALyKLiuc4VpQVKBIqWI1VoHvopXltre5hb4GtQ42/mGfwMy+IAZMSjfMKxi/hwiHQ+uGWnmU1/dC+XIEt2LuZu41ic9AhGzLFNwg5+9UZ3XM/LowEOPGuWz5SIGT/EJgnLlnKGQ44qjpW2t1vRU0hyPpmMsCMzCxoDFeviZdN3EewYz9/3gFNC7D6GaRinUf/feBLlkSXeVMiBlVqQOLnOuhgCj37GGa9km+NTXmHo03LwdiD8w1qTHIVyLNl84Kl2pxhQkG6jGybTn+3/f6RehpZJoSlmaX+1qfjlafxY3D128W//n9VJHShIYovE7vfblzZmzrUko2BwPykCTRjgQKBgQDsgNYn7Ejk2wQM+HV3ZRNYrP7egaUgK7XlE64fT6C/O0z4mwQHqtFgHrqT/xtWbo++TPRTahAyw7JunHud5uK1Oy1mQuNj0y4aV+MWl0gUR2+EJTf4CWo8SrwZn/LsI3slO4V+X6pbwEMNbTgakN3ZWBb9ge8eiE77sfzrCf52UwKBgQDqawRab9q0lWp4BL0a4zjWvxOyEh5wQnGwme5AK4b4+WpXjYpHvJrZk1bFUWnFe27OPfq0XaIuueGGpy7P9TiazYPMFJhdcSQWWKBIeIRkQEK/zfJMy5d0kLgrIEpewZX3z3FgTZACUY26fUJ0PZa1TjYeC5LDHCZdAosEK6DCSQKBgHRXQIItIwKplsmGo8pTB3xUxZ/RaNh1iCojT0GJ20qXMlsNbqMS7aJ6G1BYaytOghmcI4ixITzHtgvhoJHhlV6PuNqYRuHBbel5mHVxf/yx03LPGERE5WS5YuS8ITT2k0qSiC3Ng7FU1+dP9gxjfS7AvbaBZ46+gRQhz4gTx4CPAoGAItl8ETHV0sjvxh32OxwSpCJN/EgjTE8kdbu8pr+R1kvGGnQJXbbVUolL+hOrZNd/1ptyPQQ6izXJKGqMVBBBtQnekSVyrVmXotbUJVH9ZKYFBlzIq9AMmSC2sHqhc8rVz7yAP2/oe9/B8TqT+ZH6aMPS2c6gp+70aRlqr1kJEjkCgYEAwhGJ6N6aBHDgdvtbsnjGz4O7zlAUrP863YUh8lARLrTx9yDwU6/1mAjQMMnp2j6C5f5JwUHk6HTNesTzdYhSEDR4EzrIhmlC8EoGO8HLtyr4DIsJhxQ8vXoxWtiSZAI1qzckc0mE7DB9SPRM0tdTWnBYo84am9boGYO9ot9tQFw=
+    # 支付宝公钥
+    alipayPublicKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAs7HNvMzuFk8+Xa/+kjeiP3qTEBvAQUF9w20yXSO1gBE7Cd/Et4yjqeqRGvIjqPKI8Xfv0kXwPSiYYuk1bFNoFyzuN/W8arKwum0vPf5AeRKdi6N+iHOaT5eRjOPzTL7jYJnNc+I7B998inuMeypVCuHlKa2qpCaN4RndGErK5qTusEP8mDhUhxhMIn1SrayDnT9cb1KK2a3cbOXu1uxQasLsbR3GYOK/g9YAisKGG/egqEM7q91rFC46zOZ0OQ8qLV7S3YQEXnpsAYPS5kH1xtVfFB3Uapo6rckSVDoM0Ryjq3h96fWsgcRme5T4kSQrleIPOqNU8NZJx1NZs4C0RQIDAQAB
+    # 这个配置是可选的
+    encryptKey: 4p+P9qj0GAQbk7rUjR2/wQ==
+    # 授权回调地址[可选]
+    notifyUrl: http://39.101.77.64:9100/pay/aliPay/notify
 server:
   port: 9100
